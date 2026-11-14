@@ -17,4 +17,6 @@ The backend is the central server of the DEX AI Control Center.
 - Security and access control
 
 ## Development Status
-Backend development has not started yet.
+Initial FastAPI backend skeleton has been created.
+Core API endpoints are defined.
+Backend execution, testing, and deployment are pending.
