@@ -5,6 +5,7 @@ from datetime import datetime, timezone
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
 from app.deepseek_client import send_to_deepseek
+from app.deepseek_client import check_deepseek_config
 app = FastAPI(
     title="DEX AI Control Center",
     description="Central API for managing and connecting DEX AI agents",
@@ -81,3 +82,15 @@ async def deepseek_message(
             status_code=502,
             detail="DeepSeek request failed",
         )
+        raise HTTPException(
+            status_code=502,
+            detail="DeepSeek request failed",
+        )
+
+
+@app.get("/api/v1/agents/deepseek/status")
+async def deepseek_status(
+    x_dex_token: str | None = Header(default=None),
+):
+    verify_connector(x_dex_token)
+    return check_deepseek_config()
