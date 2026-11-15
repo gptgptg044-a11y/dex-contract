@@ -39,3 +39,11 @@ async def send_to_deepseek(message: str) -> dict:
 
         response.raise_for_status()
         return response.json()
+
+
+def check_deepseek_config() -> dict:
+    return {
+        "api_key_configured": bool(os.getenv("DEEPSEEK_API_KEY")),
+        "base_url_configured": bool(DEEPSEEK_BASE_URL),
+        "model_configured": bool(DEEPSEEK_MODEL),
+    }
