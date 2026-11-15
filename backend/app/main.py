@@ -2,11 +2,8 @@
 import os
 import secrets
 from datetime import datetime, timezone
-
 from fastapi import FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
-
-
 app = FastAPI(
     title="DEX AI Control Center",
     description="Central API for managing and connecting DEX AI agents",
