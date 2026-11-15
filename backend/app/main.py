@@ -1,4 +1,5 @@
 
+
 import os
 import secrets
 from datetime import datetime, timezone
@@ -11,11 +12,20 @@ from app.deepseek_client import (
     check_deepseek_config,
 )
 
+from app.agent_registry import (
+    AgentCreate,
+    AgentStatusUpdate,
+    register_agent,
+    list_agents,
+    get_agent,
+    update_agent_status,
+)
+
 
 app = FastAPI(
     title="DEX AI Control Center",
     description="Central API for managing and connecting DEX AI agents",
-    version="0.2.0",
+    version="0.3.0",
 )
 
 
@@ -46,7 +56,7 @@ async def root():
     return {
         "project": "DEX AI Control Center",
         "status": "running",
-        "version": "0.2.0",
+        "version": "0.3.0",
     }
 
 
@@ -101,3 +111,80 @@ async def deepseek_status(
     verify_connector(x_dex_token)
 
     return check_deepseek_config()
+
+
+@app.post("/api/v1/agents/register")
+async def create_agent(
+    payload: AgentCreate,
+    x_dex_token: str | None = Header(default=None),
+):
+    verify_connector(x_dex_token)
+
+    try:
+        agent = register_agent(payload)
+        return {
+            "status": "registered",
+            "agent": agent,
+        }
+    except ValueError:
+        raise HTTPException(
+            status_code=409,
+            detail="Agent already exists",
+        )
+
+
+@app.get("/api/v1/agents")
+async def get_agents(
+    x_dex_token: str | None = Header(default=None),
+):
+    verify_connector(x_dex_token)
+
+    agents = list_agents()
+
+    return {
+        "count": len(agents),
+        "agents": agents,
+    }
+
+
+@app.get("/api/v1/agents/{agent_id}")
+async def get_agent_details(
+    agent_id: str,
+    x_dex_token: str | None = Header(default=None),
+):
+    verify_connector(x_dex_token)
+
+    agent = get_agent(agent_id)
+
+    if agent is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Agent not found",
+        )
+
+    return agent
+
+
+@app.patch("/api/v1/agents/{agent_id}/status")
+async def change_agent_status(
+    agent_id: str,
+    payload: AgentStatusUpdate,
+    x_dex_token: str | None = Header(default=None),
+):
+    verify_connector(x_dex_token)
+
+    agent = update_agent_status(
+        agent_id,
+        payload.status,
+    )
+
+    if agent is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Agent not found",
+        )
+
+    return {
+        "status": "updated",
+        "agent": agent,
+    }
