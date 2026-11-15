@@ -1,55 +1,88 @@
-# DEX AI Control Center — Architecture
 
-## 1. Project Goal
-Build a centralized control system for coordinating AI agents in the DEX legal AI project.
+# DEX System Architecture
 
-## 2. Agent Roles
+## Project Overview
+DEX is a modular multi-agent AI control center designed to coordinate specialized AI agents through a central backend.
 
-- ChatGPT: Technical Manager, System Architect and Coordinator.
-- Claude: Primary Software Developer.
-- Codex: GitHub Workflow, Code Review and Testing.
-- DeepSeek: Independent Technical Analyst and Architecture Evaluator.
-- Human Project Manager: Final Approval and Legal Domain Supervision.
+## Current Infrastructure
+- Backend: Python + FastAPI
+- Deployment: Railway
+- API health monitoring: Operational
+- Interactive API documentation: Swagger
+- Source control: GitHub
 
-## 3. Core Modules
+## Architecture Principles
+- Modular Monolith for the initial development phase.
+- Clear separation between agents and core services.
+- Centralized task orchestration.
+- Human approval for sensitive operations.
+- Secure credential management.
+- Auditable agent activities.
 
-1. Agent Management
-2. Task Management
-3. Agent Communication
-4. Report Collection
-5. Approval Workflow
-6. GitHub Integration
-7. Audit Logging
-8. API Orchestration
-9. Security and Access Control
+## Core Modules
 
-## 4. Architecture Principles
+### 1. Agent Management
+Planned responsibilities:
+- Agent registration
+- Agent identity and role
+- Agent capabilities
+- Agent status monitoring
+- Agent configuration
 
-- Modular architecture
-- Secure API integration
-- Independent agent permissions
-- Human approval for sensitive actions
-- Centralized task and report management
-- Auditable agent operations
+### 2. Task Management
+Planned responsibilities:
+- Task creation
+- Task assignment
+- Task status tracking
+- Priority management
+- Result collection
 
-## 5. Security Requirements
+### 3. Agent Communication
+Planned responsibilities:
+- Structured messaging
+- Inter-agent communication
+- Message history
+- Error handling
 
-- Never store API keys in source code.
-- Use environment variables or secure secret storage.
-- Never expose private credentials in logs.
-- Apply least-privilege access.
-- Require human approval for sensitive operations.
+### 4. Approval Workflow
+Planned responsibilities:
+- Human review
+- Sensitive action approval
+- Rejection and revision workflow
 
-## 6. Initial Development Phases
+### 5. Audit and Security
+Planned responsibilities:
+- Activity logs
+- Access control
+- Credential protection
+- Security event tracking
 
-- Phase 1: Architecture and repository preparation.
-- Phase 2: Backend foundation.
-- Phase 3: Agent and task management.
-- Phase 4: Agent communication.
-- Phase 5: GitHub integration and testing.
-- Phase 6: Security review and deployment.
+## Development Status
 
-## 7. Current Status
+| Component | Status |
+|---|---|
+| GitHub Repository | Ready |
+| FastAPI Backend | Deployed |
+| Health Endpoint | Verified |
+| API Documentation | Available |
+| Agent Management | Planned |
+| Task Management | Planned |
+| Agent Communication | Planned |
+| Approval Workflow | Planned |
+| Audit and Security | Planned |
 
-Architecture documentation is being prepared.
-No backend or agent communication service has been deployed yet.
+## Development Phases
+
+1. Repository and architecture foundation — Completed
+2. Backend foundation and deployment — Completed
+3. Agent Management design and implementation — Next
+4. Task Management
+5. Agent Communication
+6. Integration and testing
+7. Security review and controlled expansion
+
+## Important Notes
+- The current backend is an operational foundation, not a completed multi-agent platform.
+- No external AI agent is currently integrated.
+- Technology choices for database, message queue, and frontend remain subject to technical review.
+- API keys and credentials must never be committed to the repository.
