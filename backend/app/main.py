@@ -1,10 +1,9 @@
-
-
 import os
 import secrets
 from datetime import datetime, timezone
 
-from fastapi import FastAPI, Header, HTTPException
+from fastapi import FastAPI, Depends, HTTPException
+from fastapi.security import APIKeyHeader
 from pydantic import BaseModel, Field
 
 from app.deepseek_client import (
@@ -19,6 +18,12 @@ from app.agent_registry import (
     list_agents,
     get_agent,
     update_agent_status,
+)
+
+
+connector_token_header = APIKeyHeader(
+    name="x-dex-token",
+    auto_error=False,
 )
 
 
@@ -68,7 +73,7 @@ async def health():
 @app.post("/api/v1/connector/message")
 async def receive_agent_message(
     payload: AgentMessage,
-    x_dex_token: str | None = Header(default=None),
+    x_dex_token: str | None = Depends(connector_token_header),
 ):
     verify_connector(x_dex_token)
 
@@ -84,7 +89,7 @@ async def receive_agent_message(
 @app.post("/api/v1/agents/deepseek/message")
 async def deepseek_message(
     payload: AgentMessage,
-    x_dex_token: str | None = Header(default=None),
+    x_dex_token: str | None = Depends(connector_token_header),
 ):
     verify_connector(x_dex_token)
 
@@ -106,7 +111,7 @@ async def deepseek_message(
 
 @app.get("/api/v1/agents/deepseek/status")
 async def deepseek_status(
-    x_dex_token: str | None = Header(default=None),
+    x_dex_token: str | None = Depends(connector_token_header),
 ):
     verify_connector(x_dex_token)
 
@@ -116,7 +121,7 @@ async def deepseek_status(
 @app.post("/api/v1/agents/register")
 async def create_agent(
     payload: AgentCreate,
-    x_dex_token: str | None = Header(default=None),
+    x_dex_token: str | None = Depends(connector_token_header),
 ):
     verify_connector(x_dex_token)
 
@@ -135,7 +140,7 @@ async def create_agent(
 
 @app.get("/api/v1/agents")
 async def get_agents(
-    x_dex_token: str | None = Header(default=None),
+    x_dex_token: str | None = Depends(connector_token_header),
 ):
     verify_connector(x_dex_token)
 
@@ -150,7 +155,7 @@ async def get_agents(
 @app.get("/api/v1/agents/{agent_id}")
 async def get_agent_details(
     agent_id: str,
-    x_dex_token: str | None = Header(default=None),
+    x_dex_token: str | None = Depends(connector_token_header),
 ):
     verify_connector(x_dex_token)
 
@@ -169,7 +174,7 @@ async def get_agent_details(
 async def change_agent_status(
     agent_id: str,
     payload: AgentStatusUpdate,
-    x_dex_token: str | None = Header(default=None),
+    x_dex_token: str | None = Depends(connector_token_header),
 ):
     verify_connector(x_dex_token)
 
