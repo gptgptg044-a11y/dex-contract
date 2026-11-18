@@ -1,5 +1,7 @@
+
 import os
 import secrets
+import logging
 from datetime import datetime, timezone
 
 from fastapi import FastAPI, Depends, HTTPException
@@ -19,6 +21,9 @@ from app.agent_registry import (
     get_agent,
     update_agent_status,
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 connector_token_header = APIKeyHeader(
@@ -102,11 +107,16 @@ async def deepseek_message(
             "response": result,
         }
 
-    except Exception:
+    except Exception as exc:
+        logger.exception(
+            "DeepSeek request failed. Error type: %s",
+            type(exc).__name__,
+        )
+
         raise HTTPException(
             status_code=502,
-            detail="DeepSeek request failed",
-        )
+            detail="DeepSeek request failed. Check server logs.",
+        ) from None
 
 
 @app.get("/api/v1/agents/deepseek/status")
