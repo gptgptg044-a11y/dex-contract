@@ -25,12 +25,10 @@ from app.agent_registry import (
 
 logger = logging.getLogger(__name__)
 
-
 connector_token_header = APIKeyHeader(
     name="x-dex-token",
     auto_error=False,
 )
-
 
 app = FastAPI(
     title="DEX AI Control Center",
@@ -98,6 +96,30 @@ async def deepseek_message(
 ):
     verify_connector(x_dex_token)
 
+    # 1. Check whether the agent exists
+    agent = get_agent(payload.agent_id)
+
+    if agent is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Agent not found. Register the agent first.",
+        )
+
+    # 2. Check whether the agent is enabled
+    if agent.status != "enabled":
+        raise HTTPException(
+            status_code=409,
+            detail="Agent is disabled. Enable the agent first.",
+        )
+
+    # 3. Check whether the registered provider is DeepSeek
+    if agent.provider.strip().lower() != "deepseek":
+        raise HTTPException(
+            status_code=409,
+            detail="The specified agent is not registered as a DeepSeek agent.",
+        )
+
+    # Only after all checks, send the request to DeepSeek
     try:
         result = await send_to_deepseek(payload.message)
 
@@ -137,10 +159,12 @@ async def create_agent(
 
     try:
         agent = register_agent(payload)
+
         return {
             "status": "registered",
             "agent": agent,
         }
+
     except ValueError:
         raise HTTPException(
             status_code=409,
